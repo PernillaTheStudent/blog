@@ -56,6 +56,27 @@
   }
 }
 
+.navigationButton {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  display: flex;
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+  align-items: middle;
+  margin-bottom: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+}
+
 .navigationItem {
   display: flex;
   align-items: middle;
@@ -64,7 +85,8 @@
   text-decoration: none;
 }
 
-.navigationItem:hover {
+.navigationItem:hover,
+.navigationButton:hover {
   color: #333;
 }
 
@@ -86,7 +108,8 @@
   white-space: nowrap;
 }
 
-.linkName:hover {
+.linkName:hover,
+.navigationButton:hover {
   transition: all;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
