@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "./sidebar.module.css";
 import classNames from "classnames";
 import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
 
 // om det ska in logic i navItems, som kan hantera ett onclick event då flyttar vi in den i komponenten
 // const navItems = {   // navigation har ett objekt med key-values.
@@ -25,6 +26,7 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 
 // vår komponent Navbar
 export default function Navbar() {
+  const router = useRouter();
   const supabaseClient = useSupabaseClient();
   const user = useUser(); // innehåller information om vår användare
 
@@ -57,6 +59,7 @@ export default function Navbar() {
       onClick: async () => {
         await supabaseClient.auth.signOut();
         console.log("clicked");
+        router.push("/login")
       },
     }
   };
