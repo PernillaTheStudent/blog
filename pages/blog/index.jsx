@@ -1,6 +1,9 @@
 import Link from "next/link";
 import styles from "./blog.module.css";
 import Heading from "@components/heading";
+import { useSWR } from "swr";
+import { getPosts, postCacheKey} from "../../api-routes/posts";
+import { useUser } from "@supabase/auth-helpers-react";
 
 const mockData = [
   {
@@ -20,10 +23,15 @@ const mockData = [
 ];
 
 export default function Blog() {
+  // const { data: { data = [] } = {} } = useSWR(postCacheKey, getPosts);
+  const user = useUser();
+  console.log(user);
+
   return (
     <section>
       <Heading>Blog</Heading>
       {mockData.map((post) => (
+      // {data?.map((post) => (
         <Link
           key={post.slug}
           className={styles.link}
