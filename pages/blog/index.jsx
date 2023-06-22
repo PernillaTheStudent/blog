@@ -1,8 +1,11 @@
 import Link from "next/link";
 import styles from "./blog.module.css";
 import Heading from "@components/heading";
-import { useSWR } from "swr";
-import { getPosts, postCacheKey} from "../../api-routes/posts";
+
+import useSWR from "swr";
+import { getPosts, postsCacheKey} from "../../api-routes/posts";
+// import { getPosts } from "../../api-routes/posts";
+
 import { useUser } from "@supabase/auth-helpers-react";
 
 const mockData = [
@@ -23,15 +26,18 @@ const mockData = [
 ];
 
 export default function Blog() {
-  // const { data: { data = [] } = {} } = useSWR(postCacheKey, getPosts);
+  const { data: { data = [] } = {} } = useSWR(postsCacheKey, getPosts);
+  // const { data: swrData, error, isLoading } = useSWR(postsCacheKey, getPosts);
+  console.log({data});
+
   const user = useUser();
   console.log(user);
 
   return (
     <section>
       <Heading>Blog</Heading>
-      {mockData.map((post) => (
-      // {data?.map((post) => (
+      {/* {mockData.map((post) => ( */}
+      {data?.map((post) => (
         <Link
           key={post.slug}
           className={styles.link}
@@ -39,7 +45,7 @@ export default function Blog() {
         >
           <div className="w-full flex flex-col">
             <p>{post.title}</p>
-            <time className={styles.date}>{post.createdAt}</time>
+            <time className={styles.date}>{post.created_at}</time>
           </div>
         </Link>
       ))}

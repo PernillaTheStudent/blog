@@ -6,6 +6,10 @@ import Button from "@components/button";
 import Heading from "@components/heading";
 import BlogImageBanner from "@components/blog-image-banner";
 
+import useSWR from "swr";
+// import { getPost, postsCacheKey} from "@/api-routes/posts";
+import { getPost, postsCacheKey } from "../../../api-routes/posts";
+
 const post = {
   id: "1234",
   title: "Why you should use a react framework",
@@ -30,6 +34,46 @@ export default function BlogPost() {
 
   /* Use this slug to fetch the post from the database */
   const { slug } = router.query;
+  console.log("router query", router.query)
+  console.log({ slug });
+
+  // const { data, error, isLoading } = useSWR(
+  //   slug ? `${postsCacheKey}${slug}` : null, // om det finns en slug använd vår cacheKey, annars gör ingenting
+  //   async () => await getPost);
+  // const { data, error, isLoading } = useSWR(
+  //   slug ? `${postsCacheKey}${slug}` : null, // om det finns en slug använd vår cacheKey, annars gör ingenting
+  //   () => getPost(null, {slug}));
+  // console.log({ error });
+  // console.log({ data });
+  // console.log({ isLoading });
+
+  const { data, error, isLoading } = useSWR(
+    //slug ? `${postsCacheKey}${slug}` : null,
+    slug,
+    getPost
+  );
+  // const { postData, postError, isLoading } = useSWR(
+  //   slug ? `${postsCacheKey}${slug}` : null,
+  //   () => getPost(null, { arg:slug })
+  // );
+  // console.log(arg)
+  console.log({ data, error })
+  // console.log("this is the post", data)
+
+  if (error) {
+    return <div>Error loading post</div>;
+  }
+
+  if (!data) {
+    return <div>Loading post...</div>;
+  }
+
+  const post = data.data;
+
+  if (!post) {
+    return <div>Post not found</div>;
+  }
+
 
   const handleDeletePost = () => {
     console.log({ id: post.id });
@@ -39,9 +83,14 @@ export default function BlogPost() {
     router.push(`/blog/${slug}/edit`);
   };
 
+  if (isLoading) {
+    return "...loading";
+  }
+
   return (
     <>
       <section className={styles.container}>
+        <h1>Hello</h1>
         <Heading>{post.title}</Heading>
         {post?.image && <BlogImageBanner src={post.image} alt={post.title} />}
         <div className={styles.dateContainer}>
@@ -51,7 +100,9 @@ export default function BlogPost() {
         <div dangerouslySetInnerHTML={{ __html: post.body }} />
         <span className={styles.author}>Author: {post.author}</span>
 
-        {/* The Delete & Edit part should only be showed if you are authenticated and you are the author */}
+        {
+          /* The Delete & Edit part should only be showed if you are authenticated and you are the author */
+        }
         <div className={styles.buttonContainer}>
           <Button onClick={handleDeletePost}>Delete</Button>
           <Button onClick={handleEditPost}>Edit</Button>
