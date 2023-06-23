@@ -37,9 +37,19 @@ export default function BlogPost() {
   console.log("router query", router.query)
   console.log({ slug });
 
+  const {
+    data: { data: post = [] } = {},  // returns ONE data objekt instead of data.data
+    error,
+    isLoading } = useSWR(
+      slug,
+      getPost
+    );
+  console.log({ isLoading })
+
   // const { data, error, isLoading } = useSWR(
   //   slug ? `${postsCacheKey}${slug}` : null, // om det finns en slug använd vår cacheKey, annars gör ingenting
   //   async () => await getPost);
+
   // const { data, error, isLoading } = useSWR(
   //   slug ? `${postsCacheKey}${slug}` : null, // om det finns en slug använd vår cacheKey, annars gör ingenting
   //   () => getPost(null, {slug}));
@@ -47,28 +57,35 @@ export default function BlogPost() {
   // console.log({ data });
   // console.log({ isLoading });
 
-  const { data, error, isLoading } = useSWR(
-    //slug ? `${postsCacheKey}${slug}` : null,
-    slug,
-    getPost
-  );
+  // const {
+  //   data: { data = [] } = {},  // returns ONE data objekt instead of data.data
+  //   error,
+  //   isLoading } = useSWR(
+  //     slug ? `${slug}` : null,
+  //     // slug,
+  //     () => getPost({slug})
+  //   );
+
+  // const { data, error, isLoading } = useSWR(
+  //   slug ? `${postsCacheKey}${slug}` : null,
+  //   () => getPost({ slug })
+  // );
+
   // const { postData, postError, isLoading } = useSWR(
   //   slug ? `${postsCacheKey}${slug}` : null,
   //   () => getPost(null, { arg:slug })
   // );
   // console.log(arg)
-  console.log({ data, error })
+  console.log({ post, error })
   // console.log("this is the post", data)
 
   if (error) {
     return <div>Error loading post</div>;
   }
 
-  if (!data) {
+  if (isLoading) {
     return <div>Loading post...</div>;
   }
-
-  const post = data.data;
 
   if (!post) {
     return <div>Post not found</div>;
@@ -82,10 +99,6 @@ export default function BlogPost() {
   const handleEditPost = () => {
     router.push(`/blog/${slug}/edit`);
   };
-
-  if (isLoading) {
-    return "...loading";
-  }
 
   return (
     <>
