@@ -16,8 +16,8 @@ export const getPost = async (args) => {
 //export const getPost = async (arg) => {
   console.log("inside getPost")
   const slug = args;
-  console.log("args", args)
-  console.log("this is slug:", slug);
+  // console.log("args", args)
+  // console.log("this is slug:", slug);
 
   try {
     const { data, error, status } = await supabase

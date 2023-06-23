@@ -3,7 +3,7 @@ import styles from "./blog.module.css";
 import Heading from "@components/heading";
 
 import useSWR from "swr";
-import { getPosts, postsCacheKey} from "../../api-routes/posts";
+import { getPosts, postsCacheKey } from "../../api-routes/posts";
 // import { getPosts } from "../../api-routes/posts";
 
 import { useUser } from "@supabase/auth-helpers-react";
@@ -26,13 +26,25 @@ const mockData = [
 ];
 
 export default function Blog() {
-  const { data: { data = [] } = {} } = useSWR(postsCacheKey, getPosts);
+  const {
+    data: { data = [] } = {},
+    error,
+    isLoading } = useSWR(postsCacheKey, getPosts);
   // const { data: swrData, error, isLoading } = useSWR(postsCacheKey, getPosts);
-  console.log({data});
+  console.log({ data });
 
   const user = useUser();
   console.log(user);
 
+  if (error) {
+    return <div>Error loading post</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading post...</div>;
+  }
+
+  
   return (
     <section>
       <Heading>Blog</Heading>
