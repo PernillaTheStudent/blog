@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
+import { uploadImage } from "../utils/uploadImage";
 // import { supabase } from "@supabase/auth-ui-shared";
 
 export const postsCacheKey = "/api/blogs";
@@ -23,8 +24,8 @@ export const getPost = async (args) => {
     const { data, error, status } = await supabase
       .from("posts")
       .select()
-      .eq("slug", slug)
-      .single();
+      .single()
+      .eq("slug", slug);
 
       // console.error("data",data)
     return { data, status };
@@ -42,11 +43,34 @@ export const getPost = async (args) => {
 	// return { data, error, status };
 };
 
-export const addPost = async (params) => {
+// export const addPost = async (_, { arg: newPost }) => {
+export const addPost = async (_, args) => {  // _ = postsCacheKey
+  // create a function that takes in the uploaded image from the client
+  // upload it to our bucket
+  // get the public url and return it
+  
+  // console.log(newPost);
+  console.log({args});
+  const { arg: newPost } = args;
+  console.log("newPost", newPost);
+
+  let image = "";
+
+  if (newPost?.image) {
+    const { publicUrl, error } = await uploadImage(newPost.image);
+
+    if (!error) {
+      image = publicUrl;
+    }
+  }
+
+  console.log(image)
+
   //Handle add post here
   const { data, error, status } = await supabase
     .from("posts")
-    .insert(newPost)
+    // .insert(newPost)
+    .insert({...newPost, image})  // 
     .select()
     .single()
 
@@ -58,10 +82,22 @@ export const removePost = () => {
 };
 
 export const editPost = async (_, { arg: updatedPost }) => {
+  let image = updatedPost?.image ?? "";
+
+  const isNewImage = typeof image === "object" && image !== null;
+
+  if (isNewImage) {
+    const { publicUrl, error } = await uploadImage(updatedPost.image);
+
+    if (!error) {
+      image = publicUrl;
+    }
+  }
+
   //Handle edit post here
   const { data, error, status } = await supabase
     .from("posts")
-    .update(updatedPost)
+    .update({...updatedPost, image })
     .eq("id", updatedPost.id)
     .select()
     .single();

@@ -8,8 +8,8 @@ export default function BlogImageBanner({ src, alt = "" }) {
         src={src}
         alt={alt}
         className={styles.image}
-        width={192}
-        height={192}
+        width={800}
+        height={400}
       />
     </div>
   );

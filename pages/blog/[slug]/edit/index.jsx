@@ -36,7 +36,7 @@ export default function EditBlogPost() {
   //   isLoading,
   // } = useSWR(slug ? `${postsCacheKey}${slug}` : null, () => getPost({ slug }));
 
-  const { trigger: editPostTrigger } = 
+  const { trigger: editPostTrigger } =
     useSWRMutation(`${postsCacheKey}${slug}`, editPost);
 
   const handleOnSubmit = async ({ editorContent, titleInput, image }) => {
@@ -49,12 +49,17 @@ export default function EditBlogPost() {
       body: editorContent,
       title: titleInput,
       slug: updatedSlug,
+      image,
     };
 
     const { data, error } = await editPostTrigger(updatedPost);
 
     console.log("updatedPost", updatedPost);
     console.log({ data, error })
+
+    if (!error) {
+      router.push(`/blog/${updatedSlug}`);
+    }
   };
 
   if (isLoading) {
@@ -89,7 +94,7 @@ export const getServerSideProps = async (ctx) => {
 
   const {
     data: { session }  // i datan finns en session som innehåller data om den autentiserade användaren
-   } = await supabase.auth.getSession();
+  } = await supabase.auth.getSession();
 
   const { slug } = ctx.params;   // or ctx.query
   // console.log({slug});
@@ -103,21 +108,21 @@ export const getServerSideProps = async (ctx) => {
     .single()
     .eq("slug", slug);
 
-    console.log("slug data", data)
+  console.log("slug data", data)
 
-    const isAuthor = data.user_id === session.user.id;
-    console.log({isAuthor});
+  const isAuthor = data.user_id === session.user.id;
+  console.log({ isAuthor });
 
-    if (!isAuthor) {
-      return {
-        redirect: {
-          destination: `/blog/${slug}`,   // url, vilken som helst
-          permanent: true,
-        }
+  if (!isAuthor) {
+    return {
+      redirect: {
+        destination: `/blog/${slug}`,   // url, vilken som helst
+        permanent: true,
       }
     }
+  }
 
-   return {
+  return {
     props: {},
-   }
+  }
 };
