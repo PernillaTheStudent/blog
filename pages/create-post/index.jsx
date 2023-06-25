@@ -3,7 +3,6 @@ import { createSlug } from "@/utils/createSlug";
 import { useUser } from "@supabase/auth-helpers-react";
 import { useRouter } from "next/router";
 import { addPost, postsCacheKey } from "../../api-routes/posts";
-import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
 
@@ -16,7 +15,7 @@ export default function CreatePost() {
   const handleOnSubmit = async ({ editorContent, titleInput, image }) => {
     const slug = createSlug(titleInput);
 
-    console.log({ editorContent, titleInput, image, slug });
+    // console.log({ editorContent, titleInput, image, slug });
 
     const newPost = {
       body: editorContent,
@@ -35,7 +34,6 @@ export default function CreatePost() {
 
   return (
     <>
-    {/* <input type="file" onChange={e => console.log(e.target.files)} /> */}
     {/* <input type="file" onChange={e => console.log(e.target.files[0])} /> */}
 
     <BlogEditor

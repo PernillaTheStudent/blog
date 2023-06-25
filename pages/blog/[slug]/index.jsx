@@ -18,7 +18,6 @@ export default function BlogPost() {
 
   /* Use this slug to fetch the post from the database */
   const { slug } = router.query;
-  // console.log({ slug });
 
   const { data: { data: post = [] } = {},  // returns ONE data objekt instead of data.data
     error,
@@ -39,7 +38,6 @@ export default function BlogPost() {
   }
 
   const handleDeletePost = async (postId) => {
-    // console.log({ id: post.id });
     const { error, status } = await deleteTrigger(postId);
 
     if (!error) {
@@ -56,9 +54,7 @@ export default function BlogPost() {
   let isEditor = false;
   if (user) {
     isEditor = post.user_id === user.id;
-  } 
-  console.log({ isEditor });
-  console.log({ user });
+  }
 
   return (
     <>

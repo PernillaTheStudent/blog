@@ -10,6 +10,7 @@ export default function BlogImageBanner({ src, alt = "" }) {
         className={styles.image}
         width={800}
         height={400}
+        priority={true}
       />
     </div>
   );

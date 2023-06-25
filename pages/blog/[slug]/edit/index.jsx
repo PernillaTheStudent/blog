@@ -1,20 +1,12 @@
 import { useRouter } from "next/router";
 import BlogEditor from "../../../../components/blog-editor";
 
-// import { getPost, postsCacheKey } from "@api-routes/posts";
 import { getPost, editPost, postsCacheKey } from "../../../../api-routes/posts";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 
 import { createSlug } from "../../../../utils/createSlug";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
-
-const mockData = {
-  title: "Community-Messaging Fit",
-  body: "<p>This is a good community fit!</p>",
-  image:
-    "https://media.wired.com/photos/598e35fb99d76447c4eb1f28/16:9/w_2123,h_1194,c_limit/phonepicutres-TA.jpg",
-};
 
 export default function EditBlogPost() {
   const router = useRouter();
@@ -25,16 +17,22 @@ export default function EditBlogPost() {
     data: { data: post = {} } = {},
     error,
     isLoading,
-  } = useSWR(
-    slug,
-    getPost
-  );
+  } = useSWR(slug, getPost);
+  
   console.log("post data", post)
   // const {
   //   data: { data: post = {} } = {},
   //   error,
   //   isLoading,
   // } = useSWR(slug ? `${postsCacheKey}${slug}` : null, () => getPost({ slug }));
+
+  if (error) {
+    return <div>Error loading post</div>;
+  }
+
+  if (isLoading) {
+    return <div>Loading post...</div>;
+  }
 
   const { trigger: editPostTrigger } =
     useSWRMutation(`${postsCacheKey}${slug}`, editPost);
@@ -43,7 +41,6 @@ export default function EditBlogPost() {
     console.log({ editorContent, titleInput, image, slug });
     const updatedSlug = createSlug(titleInput);
 
-    // se till så att namnen överensstämmer med databasens kolumner
     const updatedPost = {
       id: post.id,
       body: editorContent,
@@ -53,9 +50,6 @@ export default function EditBlogPost() {
     };
 
     const { data, error } = await editPostTrigger(updatedPost);
-
-    console.log("updatedPost", updatedPost);
-    console.log({ data, error })
 
     if (!error) {
       router.push(`/blog/${updatedSlug}`);
@@ -76,15 +70,6 @@ export default function EditBlogPost() {
       buttonText="Save changes"
       onSubmit={handleOnSubmit}
     />
-    // <BlogEditor
-    //   heading="Edit blog post"
-    //   title={mockData.title}
-    //   src={mockData.image}
-    //   alt={mockData.title}
-    //   content={mockData.body}
-    //   buttonText="Save changes"
-    //   onSubmit={handleOnSubmit}
-    // />
   );
 }
 
@@ -95,12 +80,9 @@ export const getServerSideProps = async (ctx) => {
   const {
     data: { session }  // i datan finns en session som innehåller data om den autentiserade användaren
   } = await supabase.auth.getSession();
+  // console.log(session);  // sker på servern, titta i terminalen
 
   const { slug } = ctx.params;   // or ctx.query
-  // console.log({slug});
-  // console.log({ctx})
-
-  // console.log(session);  // sker på servern, titta i terminalen
 
   const { data } = await supabase
     .from("posts")

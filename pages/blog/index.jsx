@@ -4,7 +4,6 @@ import Heading from "@components/heading";
 
 import useSWR from "swr";
 import { getPosts, postsCacheKey } from "../../api-routes/posts";
-// import { getPosts } from "../../api-routes/posts";
 
 import { useUser } from "@supabase/auth-helpers-react";
 
@@ -13,10 +12,8 @@ export default function Blog() {
     data: { data = [] } = {},
     error,
     isLoading } = useSWR(postsCacheKey, getPosts);
-  //console.log({ data });
-
+  
   const user = useUser();
-  console.log(user);
 
   if (error) {
     return <div>Error loading post</div>;
@@ -25,7 +22,6 @@ export default function Blog() {
   if (isLoading) {
     return <div>Loading post...</div>;
   }
-
   
   return (
     <section>
