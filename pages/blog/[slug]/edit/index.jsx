@@ -19,9 +19,8 @@ export default function EditBlogPost() {
     isLoading,
   } = useSWR(slug, getPost({ slug }));
   
-  const { trigger: editPostTrigger, isMutating } = useSWRMutation(`${postsCacheKey}${slug}`, editPost);
+  const { trigger: editPostTrigger, isMutating } = useSWRMutation(slug, editPost);
 
-  console.log("post data", post)
   // const {
   //   data: { data: post = {} } = {},
   //   error,
