@@ -8,30 +8,12 @@ import { getPosts, postsCacheKey } from "../../api-routes/posts";
 
 import { useUser } from "@supabase/auth-helpers-react";
 
-const mockData = [
-  {
-    id: "123",
-    title: "Community-Messaging Fit",
-    slug: "community-messaging-fit",
-    createdAt: "2022-02-15",
-    body: "<p>This is a good community fit!</p>",
-  },
-  {
-    id: "1234",
-    title: "Why you should use a react framework",
-    slug: "why-you-should-use-react-framework",
-    createdAt: "2022-02-12",
-    body: "<p>This is a good community fit!</p>",
-  },
-];
-
 export default function Blog() {
   const {
     data: { data = [] } = {},
     error,
     isLoading } = useSWR(postsCacheKey, getPosts);
-  // const { data: swrData, error, isLoading } = useSWR(postsCacheKey, getPosts);
-  console.log({ data });
+  //console.log({ data });
 
   const user = useUser();
   console.log(user);
@@ -48,7 +30,6 @@ export default function Blog() {
   return (
     <section>
       <Heading>Blog</Heading>
-      {/* {mockData.map((post) => ( */}
       {data?.map((post) => (
         <Link
           key={post.slug}

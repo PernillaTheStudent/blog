@@ -34,26 +34,12 @@ export const getPost = async (args) => {
     // return { data: null, error: 'An error occurred', status: 500 };
     return { error: 'An error occurred', status: 500 };
   }
-
-	// const { data, error, status } = await supabase
-	// 	.from("posts")
-	// 	.select("*")
-	// 	.single()
-	// 	.eq("slug", slug);
-	// return { data, error, status };
 };
 
-// export const addPost = async (_, { arg: newPost }) => {
-export const addPost = async (_, args) => {  // _ = postsCacheKey
+export const addPost = async (_, { arg: newPost }) => {
   // create a function that takes in the uploaded image from the client
   // upload it to our bucket
   // get the public url and return it
-  
-  // console.log(newPost);
-  console.log({args});
-  const { arg: newPost } = args;
-  console.log("newPost", newPost);
-
   let image = "";
 
   if (newPost?.image) {
@@ -64,12 +50,9 @@ export const addPost = async (_, args) => {  // _ = postsCacheKey
     }
   }
 
-  console.log(image)
-
   //Handle add post here
   const { data, error, status } = await supabase
     .from("posts")
-    // .insert(newPost)
     .insert({...newPost, image})  // 
     .select()
     .single()
@@ -77,8 +60,15 @@ export const addPost = async (_, args) => {  // _ = postsCacheKey
     return { data, error, status };
 };
 
-export const removePost = () => {
-  //Handle remove post here
+export const removePost = async (_, {arg: postId }) => {
+  // console.log("Post to delete", {postId});
+
+  const { error, status } = await supabase
+    .from("posts")
+    .delete()
+    .eq("id", postId)
+
+    return { error, status };
 };
 
 export const editPost = async (_, { arg: updatedPost }) => {
@@ -94,7 +84,6 @@ export const editPost = async (_, { arg: updatedPost }) => {
     }
   }
 
-  //Handle edit post here
   const { data, error, status } = await supabase
     .from("posts")
     .update({...updatedPost, image })
