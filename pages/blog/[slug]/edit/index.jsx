@@ -17,8 +17,11 @@ export default function EditBlogPost() {
     data: { data: post = {} } = {},
     error,
     isLoading,
-  } = useSWR(slug, getPost);
+  } = useSWR(slug, getPost({ slug }));
   
+  const { trigger: editPostTrigger, isMutating } =
+    useSWRMutation(`${postsCacheKey}${slug}`, editPost);
+
   console.log("post data", post)
   // const {
   //   data: { data: post = {} } = {},
@@ -34,8 +37,6 @@ export default function EditBlogPost() {
     return <div>Loading post...</div>;
   }
 
-  const { trigger: editPostTrigger } =
-    useSWRMutation(`${postsCacheKey}${slug}`, editPost);
 
   const handleOnSubmit = async ({ editorContent, titleInput, image }) => {
     console.log({ editorContent, titleInput, image, slug });
