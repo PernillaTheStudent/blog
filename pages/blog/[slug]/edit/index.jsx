@@ -36,7 +36,6 @@ export default function EditBlogPost() {
     return <div>Loading post...</div>;
   }
 
-
   const handleOnSubmit = async ({ editorContent, titleInput, image }) => {
     console.log({ editorContent, titleInput, image, slug });
     const updatedSlug = createSlug(titleInput);
@@ -55,10 +54,6 @@ export default function EditBlogPost() {
       router.push(`/blog/${updatedSlug}`);
     }
   };
-
-  if (isLoading) {
-    return "...loading";
-  }
 
   return (
     <BlogEditor
