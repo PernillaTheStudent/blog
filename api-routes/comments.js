@@ -1,11 +1,35 @@
-export const getComments = () => {
-  //Handle get all comments
+import { supabase } from "../lib/supabaseClient";
+
+export const commentsCacheKey = "/api/blogs";
+
+export const getComments = async (postId) => {
+  console.log("inside getComments")
+  const { data, error, status } = await supabase
+    .from("comments")
+    .select()
+    .eq("post_id", postId);
+
+  return { data, error, status };
 };
 
-export const addComment = () => {
-  //Handle add comment here
+export const addComment = async (_, { arg: newComment }) => {
+  console.log("inside addComment");
+  const { data, error, status } = await supabase
+    .from("comments")
+    .insert(newComment)
+    .select()
+    .single()
+    .eq("post_id", newComment.post_id)
+
+  return { data, error, status };
 };
 
-export const removeComment = () => {
-  //Handle remove comment here
+export const removeComment = async (_, { arg: commentId }) => {
+  console.log("inside removeComment", { commentId })
+  const { error, status } = await supabase
+    .from("comments")
+    .delete()
+    .eq("id", commentId)
+
+  return { error, status };
 };
