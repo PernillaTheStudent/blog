@@ -8,6 +8,11 @@ p {
   margin-top: 0.75rem;
 }
 
+h1 {
+  background-color: pink;
+  padding: 1rem 2rem;
+}
+
 code {
   background-color: rgba(97, 97, 97, 0.1);
   color: #616161;
